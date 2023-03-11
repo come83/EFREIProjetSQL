@@ -51,7 +51,7 @@ def insert_values(cursor):
         cursor.execute('''SET @id_ecole := LAST_INSERT_ID();''')
 
         # Insertion des données dans la table Entreprise
-        code_naf_entreprise = i['fields']['code_naf_entreprise']
+        code_naf_entreprise = i['fields'].get('code_naf_entreprise')
         depart_entreprise = i['fields'].get('depart_entreprise','')
         code_insee_entreprise = i['fields'].get('code_insee_entreprise','')
         cursor.execute('''
@@ -60,6 +60,7 @@ def insert_values(cursor):
             VALUES (%s, %s, %s);''',
                         (code_naf_entreprise, depart_entreprise, code_insee_entreprise))
     
+        cursor.execute('''SET @id_entreprise := LAST_INSERT_ID();''')
 
         # Insertion des données dans la table Specialite
         code_groupe_specialite = i['fields']['code_groupe_specialite']
@@ -72,6 +73,9 @@ def insert_values(cursor):
                         (code_groupe_specialite, libelle_specialite_com, libelle_specialite)
         )
         
+        cursor.execute('''SET @id_specialite := LAST_INSERT_ID();''')
+
+
         # Insertion des données dans la table Diplome
         diplome = i['fields'].get('diplome','')
         libelle_diplome = i['fields']['libelle_diplome']
@@ -82,6 +86,7 @@ def insert_values(cursor):
             VALUES (%s, %s, %s, @id_specialite, @id_ecole);''',
                         (diplome, libelle_diplome, type_diplome)
         )
+        cursor.execute('''SET @id_diplome := LAST_INSERT_ID();''')
 
         # Insertion des données dans la table Apprenti
 
@@ -117,5 +122,4 @@ def insert_values(cursor):
 
   
         k += 1
-        if k> 50:break
-
+        
